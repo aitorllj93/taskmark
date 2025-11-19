@@ -124,7 +124,7 @@ export interface Task {
 	 *   }
 	 * })
 	 */
-	type: TaskType;
+	type?: TaskType;
 
 	/**
 	 * List of tags associated with the task (includes type, scenario, and custom tags)
@@ -132,7 +132,7 @@ export interface Task {
 	 * Parsed from: #Tasks/Quick #work #urgent
 	 * Tags: ["Tasks/Quick", "work", "urgent"]
 	 */
-	tags: string[];
+	tags?: string[];
 
 	/**
 	 * Unique identifier for the task
@@ -262,7 +262,7 @@ export interface Task {
 	 * @example
 	 * Parsed from: 🔺 (maximum) ⏫ (high) 🔼 (medium) 🔽 (low) ⏬ (minimum)
 	 */
-	priority: Priority;
+	priority?: Priority;
 
 	/**
 	 * Recurrence pattern for the task

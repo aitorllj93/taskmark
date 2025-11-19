@@ -9,7 +9,6 @@ describe("validateTask", () => {
 			content: "Valid task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(validateTask(task)).toBe(true);
 	});
@@ -21,7 +20,6 @@ describe("validateTask", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			duration: "invalid",
-			priority: "normal",
 		};
 		expect(validateTask(task)).toBe(false);
 	});
@@ -33,7 +31,6 @@ describe("validateTask", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			dueAt: "15-01-2025",
-			priority: "normal",
 		};
 		expect(validateTask(task)).toBe(false);
 	});
@@ -45,7 +42,6 @@ describe("validateTask", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			time: { start: "9:00", end: "10:30" },
-			priority: "normal",
 		};
 		expect(validateTask(task)).toBe(false);
 	});
@@ -56,7 +52,6 @@ describe("validateTask", () => {
 			content: "",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(validateTask(task)).toBe(false);
 	});
@@ -98,7 +93,6 @@ describe("isValidTask", () => {
 			content: "Valid task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 
 		if (isValidTask(task)) {
@@ -117,7 +111,6 @@ describe("isValidTask", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			duration: "invalid",
-			priority: "normal",
 		};
 		expect(isValidTask(task)).toBe(false);
 	});
@@ -138,7 +131,6 @@ describe("validateTaskWithErrors", () => {
 			content: "Valid task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		const result = validateTaskWithErrors(task);
 		expect(result.success).toBe(true);
@@ -154,7 +146,6 @@ describe("validateTaskWithErrors", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			duration: "invalid",
-			priority: "normal",
 		};
 		const result = validateTaskWithErrors(task);
 		expect(result.success).toBe(false);
@@ -173,7 +164,6 @@ describe("validateTaskWithErrors", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			dueAt: "15-01-2025",
-			priority: "normal",
 		};
 		const result = validateTaskWithErrors(task);
 		expect(result.success).toBe(false);
@@ -192,7 +182,6 @@ describe("validateTaskWithErrors", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			time: { start: "9:00", end: "10:30" },
-			priority: "normal",
 		};
 		const result = validateTaskWithErrors(task);
 		expect(result.success).toBe(false);
@@ -207,7 +196,6 @@ describe("validateTaskWithErrors", () => {
 			content: "",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		const result = validateTaskWithErrors(task);
 		expect(result.success).toBe(false);

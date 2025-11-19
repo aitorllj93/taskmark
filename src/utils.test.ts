@@ -499,3 +499,250 @@ describe("removeDependency", () => {
 		expect(result).toBe("- [ ] Task #Tasks/Quick");
 	});
 });
+
+describe("utils with optional fields (minimal tasks)", () => {
+	describe("markAsCompleted with minimal task", () => {
+		it("should mark minimal task as completed", () => {
+			const task = "- [ ] Minimal task";
+			const result = markAsCompleted(task, "2025-01-20");
+			expect(result).toBe("- [x] Minimal task ✅ 2025-01-20");
+		});
+
+		it("should handle minimal completed task", () => {
+			const task = "- [x] Already done";
+			const result = markAsCompleted(task, "2025-01-20");
+			expect(result).toBe("- [x] Already done ✅ 2025-01-20");
+		});
+	});
+
+	describe("markAsIncomplete with minimal task", () => {
+		it("should mark minimal task as incomplete", () => {
+			const task = "- [x] Done task";
+			const result = markAsIncomplete(task);
+			expect(result).toBe("- [ ] Done task");
+		});
+	});
+
+	describe("setState with minimal task", () => {
+		it("should set state on minimal task", () => {
+			const task = "- [ ] Task";
+			const result = setState(task, "in_progress");
+			expect(result).toBe("- [/] Task");
+		});
+
+		it("should set cancelled state on minimal task", () => {
+			const task = "- [ ] Task";
+			const result = setState(task, "cancelled");
+			expect(result).toBe("- [-] Task");
+		});
+	});
+
+	describe("setScheduledDate with minimal task", () => {
+		it("should add scheduled date to minimal task", () => {
+			const task = "- [ ] Task";
+			const result = setScheduledDate(task, "2025-01-20");
+			expect(result).toBe("- [ ] Task ⏳ 2025-01-20");
+		});
+	});
+
+	describe("removeScheduledDate with minimal task", () => {
+		it("should remove scheduled date from minimal task", () => {
+			const task = "- [ ] Task ⏳ 2025-01-20";
+			const result = removeScheduledDate(task);
+			expect(result).toBe("- [ ] Task");
+		});
+	});
+
+	describe("setDueDate with minimal task", () => {
+		it("should add due date to minimal task", () => {
+			const task = "- [ ] Task";
+			const result = setDueDate(task, "2025-01-20");
+			expect(result).toBe("- [ ] Task 📅 2025-01-20");
+		});
+	});
+
+	describe("removeDueDate with minimal task", () => {
+		it("should remove due date from minimal task", () => {
+			const task = "- [ ] Task 📅 2025-01-20";
+			const result = removeDueDate(task);
+			expect(result).toBe("- [ ] Task");
+		});
+	});
+
+	describe("setStartedDate with minimal task", () => {
+		it("should add started date to minimal task", () => {
+			const task = "- [ ] Task";
+			const result = setStartedDate(task, "2025-01-18");
+			expect(result).toBe("- [ ] Task 🛫 2025-01-18");
+		});
+	});
+
+	describe("removeStartedDate with minimal task", () => {
+		it("should remove started date from minimal task", () => {
+			const task = "- [ ] Task 🛫 2025-01-18";
+			const result = removeStartedDate(task);
+			expect(result).toBe("- [ ] Task");
+		});
+	});
+
+	describe("setPriority with minimal task", () => {
+		it("should add priority to minimal task", () => {
+			const task = "- [ ] Task";
+			const result = setPriority(task, "high");
+			expect(result).toBe("- [ ] Task ⏫");
+		});
+
+		it("should set normal priority on minimal task (removes emoji)", () => {
+			const task = "- [ ] Task ⏫";
+			const result = setPriority(task, "normal");
+			expect(result).toBe("- [ ] Task");
+		});
+	});
+
+	describe("setEnergy with minimal task", () => {
+		it("should add energy to minimal task", () => {
+			const task = "- [ ] Task";
+			const result = setEnergy(task, "high");
+			expect(result).toBe("- [ ] Task 🌡️ high");
+		});
+	});
+
+	describe("removeEnergy with minimal task", () => {
+		it("should remove energy from minimal task", () => {
+			const task = "- [ ] Task 🌡️ high";
+			const result = removeEnergy(task);
+			expect(result).toBe("- [ ] Task");
+		});
+	});
+
+	describe("setDuration with minimal task", () => {
+		it("should add duration to minimal task", () => {
+			const task = "- [ ] Task";
+			const result = setDuration(task, "30m");
+			expect(result).toBe("- [ ] Task ⏱️ 30m");
+		});
+	});
+
+	describe("removeDuration with minimal task", () => {
+		it("should remove duration from minimal task", () => {
+			const task = "- [ ] Task ⏱️ 30m";
+			const result = removeDuration(task);
+			expect(result).toBe("- [ ] Task");
+		});
+	});
+
+	describe("setBlocking with minimal task", () => {
+		it("should add blocking to minimal task", () => {
+			const task = "- [ ] Task";
+			const result = setBlocking(task, true);
+			expect(result).toBe("- [ ] Task 🔒");
+		});
+
+		it("should remove blocking from minimal task", () => {
+			const task = "- [ ] Task 🔒";
+			const result = setBlocking(task, false);
+			expect(result).toBe("- [ ] Task");
+		});
+	});
+
+	describe("addFocus with minimal task", () => {
+		it("should add focus to minimal task", () => {
+			const task = "- [ ] Task";
+			const result = addFocus(task, "critical");
+			expect(result).toBe("- [ ] 🎯 Task");
+		});
+
+		it("should add multiple focuses to minimal task", () => {
+			const task = "- [ ] Task";
+			let result = addFocus(task, "critical");
+			result = addFocus(result, "hyper_focus");
+			expect(result).toBe("- [ ] 🎯 🔥 Task");
+		});
+	});
+
+	describe("removeFocus with minimal task", () => {
+		it("should remove focus from minimal task", () => {
+			const task = "- [ ] 🎯 Task";
+			const result = removeFocus(task, "critical");
+			expect(result).toBe("- [ ] Task");
+		});
+	});
+
+	describe("addTag with minimal task", () => {
+		it("should add tag to minimal task", () => {
+			const task = "- [ ] Task";
+			const result = addTag(task, "urgent");
+			expect(result).toBe("- [ ] Task #urgent");
+		});
+
+		it("should add multiple tags to minimal task", () => {
+			const task = "- [ ] Task";
+			let result = addTag(task, "urgent");
+			result = addTag(result, "important");
+			expect(result).toBe("- [ ] Task #urgent #important");
+		});
+	});
+
+	describe("removeTag with minimal task", () => {
+		it("should remove tag from minimal task", () => {
+			const task = "- [ ] Task #urgent";
+			const result = removeTag(task, "urgent");
+			expect(result).toBe("- [ ] Task");
+		});
+	});
+
+	describe("setTimeRange with minimal task", () => {
+		it("should add time range to minimal task", () => {
+			const task = "- [ ] Task";
+			const result = setTimeRange(task, "09:00", "10:30");
+			expect(result).toBe("- [ ] Task ⏰ [09:00 - 10:30]");
+		});
+	});
+
+	describe("removeTimeRange with minimal task", () => {
+		it("should remove time range from minimal task", () => {
+			const task = "- [ ] Task ⏰ [09:00 - 10:30]";
+			const result = removeTimeRange(task);
+			expect(result).toBe("- [ ] Task");
+		});
+	});
+
+	describe("addDependency with minimal task", () => {
+		it("should add dependency to minimal task", () => {
+			const task = "- [ ] Task";
+			const result = addDependency(task, "task01");
+			expect(result).toBe("- [ ] Task ⛔ task01");
+		});
+	});
+
+	describe("removeDependency with minimal task", () => {
+		it("should remove dependency from minimal task", () => {
+			const task = "- [ ] Task ⛔ task01";
+			const result = removeDependency(task, "task01");
+			expect(result).toBe("- [ ] Task");
+		});
+	});
+
+	describe("complex operations on minimal tasks", () => {
+		it("should handle multiple operations on minimal task", () => {
+			let task = "- [ ] Minimal task";
+			task = addTag(task, "urgent");
+			task = setPriority(task, "high");
+			task = setEnergy(task, "high");
+			task = setDuration(task, "30m");
+			task = setDueDate(task, "2025-01-20");
+			expect(task).toBe(
+				"- [ ] Minimal task #urgent 🌡️ high ⏱️ 30m ⏫ 📅 2025-01-20",
+			);
+		});
+
+		it("should transform minimal task to completed with metadata", () => {
+			let task = "- [ ] Task";
+			task = addTag(task, "work");
+			task = setDuration(task, "2h");
+			task = markAsCompleted(task, "2025-01-20");
+			expect(task).toContain("- [x] Task #work ⏱️ 2h");
+			expect(task).toContain("✅ 2025-01-20");
+		});
+	});
+});

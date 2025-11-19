@@ -10,7 +10,6 @@ describe("stringify - Task States", () => {
 			content: "Simple task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Simple task #Tasks/Quick");
 	});
@@ -21,7 +20,6 @@ describe("stringify - Task States", () => {
 			content: "Completed task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [x] Completed task #Tasks/Quick");
 	});
@@ -32,7 +30,6 @@ describe("stringify - Task States", () => {
 			content: "In progress task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [/] In progress task #Tasks/Quick");
 	});
@@ -43,7 +40,6 @@ describe("stringify - Task States", () => {
 			content: "Cancelled task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [-] Cancelled task #Tasks/Quick");
 	});
@@ -54,7 +50,6 @@ describe("stringify - Task States", () => {
 			content: "Forwarded task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [>] Forwarded task #Tasks/Quick");
 	});
@@ -65,7 +60,6 @@ describe("stringify - Task States", () => {
 			content: "Migrated task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [<] Migrated task #Tasks/Quick");
 	});
@@ -76,7 +70,6 @@ describe("stringify - Task States", () => {
 			content: "Scheduled task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [@] Scheduled task #Tasks/Quick");
 	});
@@ -87,7 +80,6 @@ describe("stringify - Task States", () => {
 			content: "Question task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [?] Question task #Tasks/Quick");
 	});
@@ -98,7 +90,6 @@ describe("stringify - Task States", () => {
 			content: "Important task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [!] Important task #Tasks/Quick");
 	});
@@ -109,7 +100,6 @@ describe("stringify - Task States", () => {
 			content: "Create task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [+] Create task #Tasks/Quick");
 	});
@@ -120,7 +110,6 @@ describe("stringify - Task States", () => {
 			content: "Research task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [R] Research task #Tasks/Quick");
 	});
@@ -131,7 +120,6 @@ describe("stringify - Task States", () => {
 			content: "Idea task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [i] Idea task #Tasks/Quick");
 	});
@@ -142,7 +130,6 @@ describe("stringify - Task States", () => {
 			content: "Brainstorm task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [B] Brainstorm task #Tasks/Quick");
 	});
@@ -153,7 +140,6 @@ describe("stringify - Task States", () => {
 			content: "Location task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [L] Location task #Tasks/Quick");
 	});
@@ -164,7 +150,6 @@ describe("stringify - Task States", () => {
 			content: "Bookmark task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [b] Bookmark task #Tasks/Quick");
 	});
@@ -177,7 +162,6 @@ describe("stringify - Task Types", () => {
 			content: "Task",
 			type: "main_mission",
 			tags: ["Tasks/Main_Mission"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Main_Mission");
 	});
@@ -188,7 +172,6 @@ describe("stringify - Task Types", () => {
 			content: "Task",
 			type: "secondary_mission",
 			tags: ["Tasks/Secondary_Mission"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Secondary_Mission");
 	});
@@ -199,7 +182,6 @@ describe("stringify - Task Types", () => {
 			content: "Task",
 			type: "maintenance",
 			tags: ["Tasks/Maintenance"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Maintenance");
 	});
@@ -210,7 +192,6 @@ describe("stringify - Task Types", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick");
 	});
@@ -221,9 +202,84 @@ describe("stringify - Task Types", () => {
 			content: "Task",
 			type: "admin",
 			tags: ["Tasks/Admin"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Admin");
+	});
+});
+
+describe("stringify - Optional Fields", () => {
+	it("should stringify task with only content and state", () => {
+		const task: Task = {
+			state: "incomplete",
+			content: "Minimal task",
+		};
+		expect(stringify(task)).toBe("- [ ] Minimal task");
+	});
+
+	it("should stringify completed task with only content and state", () => {
+		const task: Task = {
+			state: "completed",
+			content: "Done task",
+		};
+		expect(stringify(task)).toBe("- [x] Done task");
+	});
+
+	it("should stringify task without type but with tags", () => {
+		const task: Task = {
+			state: "incomplete",
+			content: "Task with custom tags",
+			tags: ["custom", "tags"],
+		};
+		expect(stringify(task)).toBe("- [ ] Task with custom tags #custom #tags");
+	});
+
+	it("should stringify task with type but without tags", () => {
+		const task: Task = {
+			state: "incomplete",
+			content: "Task with type only",
+			type: "quick",
+		};
+		expect(stringify(task)).toBe("- [ ] Task with type only #Tasks/Quick");
+	});
+
+	it("should stringify task without priority", () => {
+		const task: Task = {
+			state: "incomplete",
+			content: "Task without priority",
+			type: "quick",
+			tags: ["Tasks/Quick"],
+		};
+		expect(stringify(task)).toBe("- [ ] Task without priority #Tasks/Quick");
+	});
+
+	it("should stringify task with only content, state and other metadata", () => {
+		const task: Task = {
+			state: "incomplete",
+			content: "Task with metadata",
+			id: "task123",
+			duration: "30m",
+			energy: "high",
+		};
+		expect(stringify(task)).toBe("- [ ] Task with metadata 🌡️ high ⏱️ 30m 🆔 task123");
+	});
+
+	it("should stringify task with focuses but no type", () => {
+		const task: Task = {
+			state: "incomplete",
+			content: "Focused task",
+			focuses: ["critical", "hyper_focus"],
+		};
+		expect(stringify(task)).toBe("- [ ] 🎯🔥 Focused task");
+	});
+
+	it("should stringify task with scenarios but no type", () => {
+		const task: Task = {
+			state: "incomplete",
+			content: "Task with scenario",
+			scenarios: ["Work"],
+			tags: ["Scenarios/Work"],
+		};
+		expect(stringify(task)).toBe("- [ ] Task with scenario #Scenarios/Work");
 	});
 });
 
@@ -234,7 +290,6 @@ describe("stringify - Tags", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick", "urgent", "backend"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick #urgent #backend");
 	});
@@ -245,7 +300,6 @@ describe("stringify - Tags", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick", "Scenarios/Work/Programming"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe(
 			"- [ ] Task #Tasks/Quick #Scenarios/Work/Programming",
@@ -258,7 +312,6 @@ describe("stringify - Tags", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick", "bug", "priority", "frontend"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe(
 			"- [ ] Task #Tasks/Quick #bug #priority #frontend",
@@ -271,7 +324,6 @@ describe("stringify - Tags", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick", "first", "second", "third"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe(
 			"- [ ] Task #Tasks/Quick #first #second #third",
@@ -287,7 +339,6 @@ describe("stringify - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["critical"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] 🎯 Critical task #Tasks/Quick");
 	});
@@ -299,7 +350,6 @@ describe("stringify - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["mechanical"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] 🔧 Mechanical task #Tasks/Quick");
 	});
@@ -311,7 +361,6 @@ describe("stringify - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["maintenance"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] 🧹 Maintenance task #Tasks/Quick");
 	});
@@ -323,7 +372,6 @@ describe("stringify - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["hyper_focus"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] 🔥 Intense task #Tasks/Quick");
 	});
@@ -335,7 +383,6 @@ describe("stringify - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["low_energy"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] 🐢 Low energy task #Tasks/Quick");
 	});
@@ -347,7 +394,6 @@ describe("stringify - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["high_energy"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] ⚡ High energy task #Tasks/Quick");
 	});
@@ -359,7 +405,6 @@ describe("stringify - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["chunking"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] 🪓 Chunking task #Tasks/Quick");
 	});
@@ -371,7 +416,6 @@ describe("stringify - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["errands"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] 📦 Errands task #Tasks/Quick");
 	});
@@ -383,7 +427,6 @@ describe("stringify - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["hard_cognitive"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] 🧠 Hard cognitive task #Tasks/Quick");
 	});
@@ -395,7 +438,6 @@ describe("stringify - Focuses", () => {
 			type: "main_mission",
 			tags: ["Tasks/Main_Mission"],
 			focuses: ["critical", "hyper_focus", "hard_cognitive"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe(
 			"- [ ] 🎯🔥🧠 Complex task #Tasks/Main_Mission",
@@ -408,7 +450,6 @@ describe("stringify - Focuses", () => {
 			content: "Simple task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Simple task #Tasks/Quick");
 	});
@@ -422,7 +463,6 @@ describe("stringify - Scenarios", () => {
 			type: "quick",
 			tags: ["Tasks/Quick", "Scenarios/Work"],
 			scenarios: ["Work"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick #Scenarios/Work");
 	});
@@ -434,7 +474,6 @@ describe("stringify - Scenarios", () => {
 			type: "quick",
 			tags: ["Tasks/Quick", "Scenarios/Work/Intense/Programming"],
 			scenarios: ["Work/Intense/Programming"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe(
 			"- [ ] Task #Tasks/Quick #Scenarios/Work/Intense/Programming",
@@ -448,7 +487,6 @@ describe("stringify - Scenarios", () => {
 			type: "quick",
 			tags: ["Tasks/Quick", "Scenarios/Work", "Scenarios/Home"],
 			scenarios: ["Work", "Home"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe(
 			"- [ ] Task #Tasks/Quick #Scenarios/Work #Scenarios/Home",
@@ -464,7 +502,6 @@ describe("stringify - Energy", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			energy: "high",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick 🌡️ high");
 	});
@@ -476,7 +513,6 @@ describe("stringify - Energy", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			energy: "medium",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick 🌡️ medium");
 	});
@@ -488,7 +524,6 @@ describe("stringify - Energy", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			energy: "low",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick 🌡️ low");
 	});
@@ -499,7 +534,6 @@ describe("stringify - Energy", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).not.toContain("🌡️");
 	});
@@ -513,7 +547,6 @@ describe("stringify - Duration", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			duration: "15m",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick ⏱️ 15m");
 	});
@@ -525,7 +558,6 @@ describe("stringify - Duration", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			duration: "30m",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick ⏱️ 30m");
 	});
@@ -537,7 +569,6 @@ describe("stringify - Duration", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			duration: "90m",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick ⏱️ 90m");
 	});
@@ -549,7 +580,6 @@ describe("stringify - Duration", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			duration: "2h",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick ⏱️ 2h");
 	});
@@ -560,7 +590,6 @@ describe("stringify - Duration", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).not.toContain("⏱️");
 	});
@@ -574,7 +603,6 @@ describe("stringify - Blocking", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			blocking: true,
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick 🔒");
 	});
@@ -585,7 +613,6 @@ describe("stringify - Blocking", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).not.toContain("🔒");
 	});
@@ -599,7 +626,6 @@ describe("stringify - Dates", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			createdAt: "2025-01-12",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick ➕ 2025-01-12");
 	});
@@ -611,7 +637,6 @@ describe("stringify - Dates", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			scheduledAt: "2025-01-12",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick ⏳ 2025-01-12");
 	});
@@ -623,7 +648,6 @@ describe("stringify - Dates", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			startedAt: "2025-01-12",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick 🛫 2025-01-12");
 	});
@@ -635,7 +659,6 @@ describe("stringify - Dates", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			dueAt: "2025-01-12",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick 📅 2025-01-12");
 	});
@@ -647,7 +670,6 @@ describe("stringify - Dates", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			completedAt: "2025-01-12",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [x] Task #Tasks/Quick ✅ 2025-01-12");
 	});
@@ -659,7 +681,6 @@ describe("stringify - Dates", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			cancelledAt: "2025-01-12",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [-] Task #Tasks/Quick ❌ 2025-01-12");
 	});
@@ -673,7 +694,6 @@ describe("stringify - Dates", () => {
 			createdAt: "2025-01-10",
 			scheduledAt: "2025-01-11",
 			dueAt: "2025-01-12",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe(
 			"- [ ] Task #Tasks/Quick ➕ 2025-01-10 ⏳ 2025-01-11 📅 2025-01-12",
@@ -689,7 +709,6 @@ describe("stringify - Times", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			time: { start: "09:00", end: "10:30" },
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick ⏰ [09:00 - 10:30]");
 	});
@@ -701,7 +720,6 @@ describe("stringify - Times", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			time: { start: "14:00", end: "15:45" },
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick ⏰ [14:00 - 15:45]");
 	});
@@ -712,7 +730,6 @@ describe("stringify - Times", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).not.toContain("⏰");
 	});
@@ -758,7 +775,6 @@ describe("stringify - Priority", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).not.toContain("🔺");
 		expect(stringify(task)).not.toContain("⏫");
@@ -798,7 +814,6 @@ describe("stringify - Recurrence", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			recurrence: "every week on Monday",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe(
 			"- [ ] Task #Tasks/Quick 🔁 every week on Monday",
@@ -812,7 +827,6 @@ describe("stringify - Recurrence", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			recurrence: "every 2 weeks on Tuesday",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe(
 			"- [ ] Task #Tasks/Quick 🔁 every 2 weeks on Tuesday",
@@ -825,7 +839,6 @@ describe("stringify - Recurrence", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).not.toContain("🔁");
 	});
@@ -839,7 +852,6 @@ describe("stringify - Dependencies", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			id: "abc123",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick 🆔 abc123");
 	});
@@ -851,7 +863,6 @@ describe("stringify - Dependencies", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			dependencies: ["def999"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick ⛔ def999");
 	});
@@ -863,7 +874,6 @@ describe("stringify - Dependencies", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			dependencies: ["def999", "xyz111"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick ⛔ def999 ⛔ xyz111");
 	});
@@ -875,7 +885,6 @@ describe("stringify - Dependencies", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			hooks: { onCompletion: ["start:abc123"] },
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick 🏁 start:abc123");
 	});
@@ -887,7 +896,6 @@ describe("stringify - Dependencies", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			hooks: { onCompletion: ["start:abc123", "notify:def456"] },
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe(
 			"- [ ] Task #Tasks/Quick 🏁 start:abc123 🏁 notify:def456",
@@ -903,7 +911,6 @@ describe("stringify - Dependencies", () => {
 			id: "task001",
 			dependencies: ["task002"],
 			hooks: { onCompletion: ["start:task003"] },
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe(
 			"- [ ] Task #Tasks/Quick 🆔 task001 ⛔ task002 🏁 start:task003",
@@ -922,7 +929,6 @@ describe("stringify - Complex Examples from SPEC", () => {
 			scenarios: ["Home/Organization"],
 			energy: "low",
 			duration: "15m",
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe(
 			"- [ ] 🔧 Clean the downloads folder #Tasks/Maintenance #Scenarios/Home/Organization 🌡️ low ⏱️ 15m",
@@ -961,7 +967,6 @@ describe("stringify - Complex Examples from SPEC", () => {
 			duration: "15m",
 			energy: "medium",
 			dependencies: ["planRuta01"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe(
 			"- [ ] 📦⚡ Buy fruit at the supermarket #Tasks/Quick #Scenarios/Shopping/SuperMarket/Fruit 🌡️ medium ⏱️ 15m ⛔ planRuta01",
@@ -1028,7 +1033,7 @@ describe("stringify - Round-trip (parse ↔ stringify)", () => {
 		const parsed = parse(original);
 		const stringified = stringify(parsed);
 		const reparsed = parse(stringified);
-		expect(reparsed.tags.sort()).toEqual(parsed.tags.sort());
+		expect(reparsed.tags?.sort()).toEqual(parsed.tags?.sort());
 	});
 });
 
@@ -1065,7 +1070,6 @@ describe("stringify - Edge Cases", () => {
 			content: "Task with @mentions and #hashtags but valid",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe(
 			"- [ ] Task with @mentions and #hashtags but valid #Tasks/Quick",
@@ -1078,7 +1082,6 @@ describe("stringify - Edge Cases", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(stringify(task)).toBe("- [ ] Task #Tasks/Quick");
 	});
@@ -1091,7 +1094,6 @@ describe("stringify - StringifyConfig", () => {
 			content: "Tarea",
 			type: "main_mission",
 			tags: ["Tasks/Main_Mission"],
-			priority: "normal",
 		};
 		const config: StringifyConfig = {
 			typeTagMapping: {
@@ -1114,7 +1116,6 @@ describe("stringify - StringifyConfig", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			scenarios: ["Trabajo"],
-			priority: "normal",
 		};
 		const config: StringifyConfig = {
 			scenarioPrefix: "Escenarios/",
@@ -1131,7 +1132,6 @@ describe("stringify - StringifyConfig", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			scenarios: ["work", "home"],
-			priority: "normal",
 		};
 		const config: StringifyConfig = {
 			scenarioMapping: {
@@ -1151,7 +1151,6 @@ describe("stringify - StringifyConfig", () => {
 			type: "main_mission",
 			tags: ["Tasks/Main_Mission"],
 			focuses: ["critical"],
-			priority: "normal",
 		};
 		const config: StringifyConfig = {
 			typeTagMapping: {
@@ -1174,7 +1173,6 @@ describe("stringify - StringifyConfig", () => {
 			type: "main_mission",
 			tags: ["Tasks/Main_Mission"],
 			scenarios: ["work/programming"],
-			priority: "normal",
 		};
 		const config: StringifyConfig = {
 			typeTagMapping: {
@@ -1261,7 +1259,6 @@ describe("stringify - StringifyConfig", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			scenarios: ["Trabajo", "Casa"],
-			priority: "normal",
 		};
 		const config: StringifyConfig = {
 			scenarioPrefix: "Escenarios/",
@@ -1277,7 +1274,6 @@ describe("stringify - StringifyConfig", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick", "urgent", "backend"],
-			priority: "normal",
 		};
 		const config: StringifyConfig = {
 			typeTagMapping: {
@@ -1302,21 +1298,18 @@ describe("stringifyArray", () => {
 				content: "First task",
 				type: "quick",
 				tags: ["Tasks/Quick"],
-				priority: "normal",
 			},
 			{
 				state: "completed",
 				content: "Second task",
 				type: "quick",
 				tags: ["Tasks/Quick"],
-				priority: "normal",
 			},
 			{
 				state: "incomplete",
 				content: "Third task",
 				type: "main_mission",
 				tags: ["Tasks/Main_Mission"],
-				priority: "normal",
 			},
 		];
 		const result = stringifyArray(tasks);
@@ -1338,7 +1331,6 @@ describe("stringifyArray", () => {
 				content: "Single task",
 				type: "quick",
 				tags: ["Tasks/Quick"],
-				priority: "normal",
 			},
 		];
 		const result = stringifyArray(tasks);
@@ -1352,14 +1344,12 @@ describe("stringifyArray", () => {
 				content: "Tarea 1",
 				type: "main_mission",
 				tags: ["Tasks/Main_Mission"],
-				priority: "normal",
 			},
 			{
 				state: "incomplete",
 				content: "Tarea 2",
 				type: "quick",
 				tags: ["Tasks/Quick"],
-				priority: "normal",
 			},
 		];
 		const config: StringifyConfig = {
@@ -1385,7 +1375,6 @@ describe("stringifyArray", () => {
 				type: "quick",
 				tags: ["Tasks/Quick"],
 				focuses: ["critical"],
-				priority: "normal",
 			},
 			{
 				state: "completed",
@@ -1394,7 +1383,6 @@ describe("stringifyArray", () => {
 				tags: ["Tasks/Quick"],
 				createdAt: "2025-01-10",
 				completedAt: "2025-01-12",
-				priority: "normal",
 			},
 		];
 		const result = stringifyArray(tasks);
@@ -1412,7 +1400,6 @@ describe("stringify - Validation Options", () => {
 			content: "Valid task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(() => stringify(validTask)).not.toThrow();
 
@@ -1423,7 +1410,6 @@ describe("stringify - Validation Options", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			duration: "invalid", // Invalid duration format
-			priority: "normal",
 		} as Task;
 		expect(() => stringify(invalidTask)).toThrow();
 	});
@@ -1435,7 +1421,6 @@ describe("stringify - Validation Options", () => {
 			content: "Valid task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		expect(() => stringify(validTask, { validate: true })).not.toThrow();
 
@@ -1446,7 +1431,6 @@ describe("stringify - Validation Options", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			duration: "invalid",
-			priority: "normal",
 		} as Task;
 		expect(() => stringify(invalidTask, { validate: true })).toThrow();
 	});
@@ -1458,7 +1442,6 @@ describe("stringify - Validation Options", () => {
 			content: "Valid task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		};
 		const result1 = stringify(validTask, { validate: false });
 		expect(result1).toBe("- [ ] Valid task #Tasks/Quick");
@@ -1470,7 +1453,6 @@ describe("stringify - Validation Options", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			duration: "invalid",
-			priority: "normal",
 		} as Task;
 		const result2 = stringify(invalidTask, { validate: false });
 		expect(result2).toBe("- [ ] Invalid task #Tasks/Quick ⏱️ invalid");
@@ -1484,7 +1466,6 @@ describe("stringify - Validation Options", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			dueAt: "2025-01-15",
-			priority: "normal",
 		};
 		expect(() => stringify(validTask)).not.toThrow();
 
@@ -1495,7 +1476,6 @@ describe("stringify - Validation Options", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			dueAt: "15-01-2025",
-			priority: "normal",
 		} as Task;
 		expect(() => stringify(invalidTask)).toThrow();
 	});
@@ -1508,7 +1488,6 @@ describe("stringify - Validation Options", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			time: { start: "09:00", end: "10:30" },
-			priority: "normal",
 		};
 		expect(() => stringify(validTask)).not.toThrow();
 
@@ -1519,7 +1498,6 @@ describe("stringify - Validation Options", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			time: { start: "9:00", end: "10:30" },
-			priority: "normal",
 		} as Task;
 		expect(() => stringify(invalidTask)).toThrow();
 	});

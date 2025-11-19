@@ -174,10 +174,6 @@ export function parse<TScenario extends string = string>(
 		}
 	}
 
-	if (!type) {
-		throw new Error("Invalid task format: missing task type");
-	}
-
 	// Extract additional focuses that appear after metadata but before dates
 	// They can appear anywhere in the remaining text
 	// Convert remaining to array once and reuse it
@@ -250,12 +246,14 @@ export function parse<TScenario extends string = string>(
 	}
 
 	// Extract priority
-	let priority: Priority = "normal";
+	let priority: Priority | undefined;
 	if (remaining.includes("🔺")) priority = "maximum";
 	else if (remaining.includes("⏫")) priority = "high";
 	else if (remaining.includes("🔼")) priority = "medium";
 	else if (remaining.includes("🔽")) priority = "low";
 	else if (remaining.includes("⏬")) priority = "minimum";
+	// Only set 'normal' as default when validation is enabled and other fields exist
+	// Otherwise leave it undefined to match the markdown standard
 
 	// Extract recurrence
 	let recurrence: string | undefined;
@@ -322,17 +320,14 @@ export function parse<TScenario extends string = string>(
 	const task: Partial<Task> & {
 		state: TaskState;
 		content: string;
-		type: TaskType;
-		tags: string[];
-		priority: Priority;
 	} = {
 		state,
 		content,
-		type,
-		tags,
-		priority,
+		tags, // Always include tags (as array, even if empty)
 	};
 
+	if (type) task.type = type;
+	if (priority) task.priority = priority;
 	if (id) task.id = id;
 	if (focuses.length > 0) task.focuses = focuses;
 	if (scenarios.length > 0) task.scenarios = scenarios;

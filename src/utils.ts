@@ -489,14 +489,35 @@ export function addFocus(taskString: string, focus: string): string {
 	const stateMatch = taskString.match(/^-\s*\[\s*[^\]]*\s*\]/);
 	if (stateMatch && stateMatch.index !== undefined) {
 		const afterState = stateMatch.index + stateMatch[0].length;
+
+		// Find any existing focus emojis after the state
+		const afterStateText = taskString.slice(afterState);
+		const focusEmojis = Object.values(FOCUS_NAME_TO_EMOJI);
+		let lastFocusPos = afterState;
+
+		// Find the position after all existing focus emojis
+		for (const focusEmoji of focusEmojis) {
+			const focusIndex = afterStateText.indexOf(focusEmoji);
+			if (focusIndex >= 0) {
+				const absolutePos = afterState + focusIndex + focusEmoji.length;
+				if (absolutePos > lastFocusPos) {
+					lastFocusPos = absolutePos;
+				}
+			}
+		}
+
 		// Find first tag or content start
 		const tagMatch = taskString.match(/#/);
 		const contentStart =
 			tagMatch && tagMatch.index !== undefined
 				? tagMatch.index
 				: taskString.length;
-		const insertPos = Math.min(afterState + 1, contentStart);
-		return `${taskString.slice(0, insertPos)} ${emoji}${taskString.slice(insertPos)}`.trim();
+
+		const insertPos = Math.max(lastFocusPos, Math.min(afterState + 1, contentStart));
+		// Remove spaces from both ends to avoid double spacing
+		const before = taskString.slice(0, insertPos).trimEnd();
+		const after = taskString.slice(insertPos).trimStart();
+		return `${before} ${emoji} ${after}`.trim();
 	}
 
 	return taskString;

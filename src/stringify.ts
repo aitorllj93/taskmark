@@ -117,8 +117,11 @@ export function stringify<TScenario extends string = string>(
 
 	// Get type tag mapping (use custom if provided, otherwise default)
 	const typeToTag = config?.typeTagMapping || DEFAULT_TYPE_TO_TAG;
-	const typeTag = typeToTag[task.type];
-	tags.push(`#${typeTag}`);
+	const typeTag = task.type ? typeToTag[task.type] : undefined;
+
+	if (typeTag) {
+		tags.push(`#${typeTag}`);
+	}
 
 	// Handle scenarios with custom prefix and mapping
 	const scenarioPrefix = config?.scenarioPrefix || "Scenarios/";
@@ -145,34 +148,35 @@ export function stringify<TScenario extends string = string>(
 	}
 
 	// Add all other tags (custom tags, excluding type tag and scenario tags already added)
-	const typeTagWithoutHash = typeTag;
 	const defaultTypeTags = new Set(Object.values(DEFAULT_TYPE_TO_TAG));
 
-	for (const tag of task.tags) {
-		// Skip type tag if it matches (either default or custom)
-		if (tag === typeTagWithoutHash) {
-			continue;
-		}
-		// Skip scenario tags that we've already added from normalized scenarios
-		if (addedScenarioTags.has(tag)) {
-			continue;
-		}
-		// Skip default type tags that don't match the current type
-		if (defaultTypeTags.has(tag) && tag !== typeTagWithoutHash) {
-			continue;
-		}
-		// If we have normalized scenarios and this is a scenario tag, skip it
-		// (we've already added it from normalized scenarios)
-		if (task.scenarios && task.scenarios.length > 0) {
-			const isDefaultScenarioTag =
-				tag.startsWith("Scenarios/") && scenarioPrefix === "Scenarios/";
-			const isCustomScenarioTag =
-				tag.startsWith(scenarioPrefix) && scenarioPrefix !== "Scenarios/";
-			if (isDefaultScenarioTag || isCustomScenarioTag) {
+	if (task.tags) {
+		for (const tag of task.tags) {
+			// Skip type tag if it matches (either default or custom)
+			if (tag === typeTag) {
 				continue;
 			}
+			// Skip scenario tags that we've already added from normalized scenarios
+			if (addedScenarioTags.has(tag)) {
+				continue;
+			}
+			// Skip default type tags that don't match the current type
+			if (defaultTypeTags.has(tag) && tag !== typeTag) {
+				continue;
+			}
+			// If we have normalized scenarios and this is a scenario tag, skip it
+			// (we've already added it from normalized scenarios)
+			if (task.scenarios && task.scenarios.length > 0) {
+				const isDefaultScenarioTag =
+					tag.startsWith("Scenarios/") && scenarioPrefix === "Scenarios/";
+				const isCustomScenarioTag =
+					tag.startsWith(scenarioPrefix) && scenarioPrefix !== "Scenarios/";
+				if (isDefaultScenarioTag || isCustomScenarioTag) {
+					continue;
+				}
+			}
+			tags.push(`#${tag}`);
 		}
-		tags.push(`#${tag}`);
 	}
 
 	if (tags.length > 0) {

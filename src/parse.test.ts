@@ -9,7 +9,6 @@ describe("parse - Task States", () => {
 			content: "Simple task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -19,7 +18,6 @@ describe("parse - Task States", () => {
 			content: "Completed task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -29,7 +27,6 @@ describe("parse - Task States", () => {
 			content: "In progress task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -39,7 +36,6 @@ describe("parse - Task States", () => {
 			content: "Cancelled task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -49,7 +45,6 @@ describe("parse - Task States", () => {
 			content: "Forwarded task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -59,7 +54,6 @@ describe("parse - Task States", () => {
 			content: "Migrated task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -69,7 +63,6 @@ describe("parse - Task States", () => {
 			content: "Scheduled task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -79,7 +72,6 @@ describe("parse - Task States", () => {
 			content: "Question task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -89,7 +81,6 @@ describe("parse - Task States", () => {
 			content: "Important task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -99,7 +90,6 @@ describe("parse - Task States", () => {
 			content: "Create task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -109,7 +99,6 @@ describe("parse - Task States", () => {
 			content: "Research task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -119,7 +108,6 @@ describe("parse - Task States", () => {
 			content: "Idea task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -129,7 +117,6 @@ describe("parse - Task States", () => {
 			content: "Brainstorm task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -139,7 +126,6 @@ describe("parse - Task States", () => {
 			content: "Location task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -149,7 +135,6 @@ describe("parse - Task States", () => {
 			content: "Bookmark task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -166,6 +151,104 @@ describe("parse - Task States", () => {
 	});
 });
 
+describe("parse - Optional Fields", () => {
+	it("should parse task with only state and content", () => {
+		const result = parse("- [ ] Minimal task");
+		expect(result).toMatchObject({
+			state: "incomplete",
+			content: "Minimal task",
+		});
+		expect(result.type).toBeUndefined();
+		expect(result.tags).toEqual([]);
+		expect(result.priority).toBeUndefined();
+	});
+
+	it("should parse completed task with only state and content", () => {
+		const result = parse("- [x] Done task");
+		expect(result).toMatchObject({
+			state: "completed",
+			content: "Done task",
+		});
+		expect(result.type).toBeUndefined();
+		expect(result.tags).toEqual([]);
+		expect(result.priority).toBeUndefined();
+	});
+
+	it("should parse task without type but with custom tags", () => {
+		const result = parse("- [ ] Task with tags #custom #important");
+		expect(result).toMatchObject({
+			state: "incomplete",
+			content: "Task with tags",
+			tags: ["custom", "important"],
+		});
+		expect(result.type).toBeUndefined();
+		expect(result.priority).toBeUndefined();
+	});
+
+	it("should parse task with type but without priority", () => {
+		const result = parse("- [ ] Task with type #Tasks/Quick");
+		expect(result).toMatchObject({
+			state: "incomplete",
+			content: "Task with type",
+			type: "quick",
+			tags: ["Tasks/Quick"],
+		});
+		expect(result.priority).toBeUndefined();
+	});
+
+	it("should parse task with only content, state and metadata", () => {
+		const result = parse("- [ ] Task with metadata 🌡️ high ⏱️ 30m 🆔 task123");
+		expect(result).toMatchObject({
+			state: "incomplete",
+			content: "Task with metadata",
+			energy: "high",
+			duration: "30m",
+			id: "task123",
+		});
+		expect(result.type).toBeUndefined();
+		expect(result.tags).toEqual([]);
+		expect(result.priority).toBeUndefined();
+	});
+
+	it("should parse task with focuses but no type", () => {
+		const result = parse("- [ ] 🎯🔥 Focused task");
+		expect(result).toMatchObject({
+			state: "incomplete",
+			content: "Focused task",
+			focuses: ["critical", "hyper_focus"],
+		});
+		expect(result.type).toBeUndefined();
+		expect(result.tags).toEqual([]);
+		expect(result.priority).toBeUndefined();
+	});
+
+	it("should parse task with scenario but no type", () => {
+		const result = parse("- [ ] Task with scenario #Scenarios/Work");
+		expect(result).toMatchObject({
+			state: "incomplete",
+			content: "Task with scenario",
+			scenarios: ["Work"],
+			tags: ["Scenarios/Work"],
+		});
+		expect(result.type).toBeUndefined();
+		expect(result.priority).toBeUndefined();
+	});
+
+	it("should round-trip minimal task", () => {
+		const original = "- [ ] Minimal task";
+		const parsed = parse(original);
+		const stringified = stringify(parsed);
+		expect(stringified).toBe(original);
+	});
+
+	it("should round-trip task without type", () => {
+		const original = "- [ ] Task #custom #tags";
+		const parsed = parse(original);
+		const stringified = stringify(parsed);
+		expect(stringified).toBe(original);
+	});
+});
+
 describe("parse - Task Types", () => {
 	it("should parse Main_Mission type", () => {
 		expect(parse("- [ ] Task #Tasks/Main_Mission")).toMatchObject({
@@ -173,7 +256,6 @@ describe("parse - Task Types", () => {
 			content: "Task",
 			type: "main_mission",
 			tags: ["Tasks/Main_Mission"],
-			priority: "normal",
 		});
 	});
 
@@ -183,7 +265,6 @@ describe("parse - Task Types", () => {
 			content: "Task",
 			type: "secondary_mission",
 			tags: ["Tasks/Secondary_Mission"],
-			priority: "normal",
 		});
 	});
 
@@ -193,7 +274,6 @@ describe("parse - Task Types", () => {
 			content: "Task",
 			type: "maintenance",
 			tags: ["Tasks/Maintenance"],
-			priority: "normal",
 		});
 	});
 
@@ -203,7 +283,6 @@ describe("parse - Task Types", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -213,14 +292,17 @@ describe("parse - Task Types", () => {
 			content: "Task",
 			type: "admin",
 			tags: ["Tasks/Admin"],
-			priority: "normal",
 		});
 	});
 
-	it("should throw error on missing type", () => {
-		expect(() => parse("- [ ] Task without type")).toThrow(
-			"Invalid task format: missing task type",
-		);
+	it("should parse task without type", () => {
+		const result = parse("- [ ] Task without type");
+		expect(result).toMatchObject({
+			state: "incomplete",
+			content: "Task without type",
+			tags: [],
+		});
+		expect(result.type).toBeUndefined();
 	});
 
 	it("should support custom type tag mapping", () => {
@@ -233,7 +315,6 @@ describe("parse - Task Types", () => {
 			content: "Tarea",
 			type: "main_mission",
 			tags: ["Tareas/Mision_Principal"],
-			priority: "normal",
 		});
 	});
 
@@ -243,7 +324,6 @@ describe("parse - Task Types", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 
 		expect(
@@ -255,7 +335,6 @@ describe("parse - Task Types", () => {
 			content: "Tarea",
 			type: "quick",
 			tags: ["Tareas/Rapida"],
-			priority: "normal",
 		});
 	});
 
@@ -269,7 +348,6 @@ describe("parse - Task Types", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick", "CustomType"],
-			priority: "normal",
 		});
 	});
 
@@ -295,7 +373,6 @@ describe("parse - Task Types", () => {
 			type: "main_mission",
 			tags: ["Tareas/Mision_Principal"],
 			focuses: ["critical"],
-			priority: "normal",
 		});
 	});
 
@@ -317,7 +394,6 @@ describe("parse - Task Types", () => {
 			content: "Réviser le code",
 			type: "quick",
 			tags: ["Tâches/Rapide"],
-			priority: "normal",
 		});
 	});
 
@@ -346,7 +422,6 @@ describe("parse - Task Types", () => {
 			type: "main_mission",
 			tags: ["Tareas/Mision_Principal", "Escenarios/Trabajo/Programacion"],
 			scenarios: ["work/programming"],
-			priority: "normal",
 		});
 	});
 });
@@ -358,7 +433,6 @@ describe("parse - Tags", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick", "urgent", "backend"],
-			priority: "normal",
 		});
 	});
 
@@ -368,7 +442,6 @@ describe("parse - Tags", () => {
 			content: "Task",
 			type: "main_mission",
 			tags: ["Tasks/Main_Mission"],
-			priority: "normal",
 		});
 	});
 
@@ -381,7 +454,6 @@ describe("parse - Tags", () => {
 			type: "quick",
 			tags: ["Tasks/Quick", "Scenarios/Work/Programming"],
 			scenarios: ["Work/Programming"],
-			priority: "normal",
 		});
 	});
 
@@ -393,7 +465,6 @@ describe("parse - Tags", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick", "bug", "priority", "frontend"],
-			priority: "normal",
 		});
 	});
 
@@ -414,7 +485,6 @@ describe("parse - Tags", () => {
 				"finance",
 			],
 			scenarios: ["Work", "Home"],
-			priority: "normal",
 		});
 	});
 
@@ -426,7 +496,6 @@ describe("parse - Tags", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["first", "Tasks/Quick", "second", "third"],
-			priority: "normal",
 		});
 	});
 
@@ -438,7 +507,6 @@ describe("parse - Tags", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick", "tag-with-dash", "tag_with_underscore"],
-			priority: "normal",
 		});
 	});
 
@@ -448,7 +516,6 @@ describe("parse - Tags", () => {
 			content: "Simple task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 });
@@ -461,7 +528,6 @@ describe("parse - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["critical"],
-			priority: "normal",
 		});
 	});
 
@@ -472,7 +538,6 @@ describe("parse - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["mechanical"],
-			priority: "normal",
 		});
 	});
 
@@ -483,7 +548,6 @@ describe("parse - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["maintenance"],
-			priority: "normal",
 		});
 	});
 
@@ -494,7 +558,6 @@ describe("parse - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["hyper_focus"],
-			priority: "normal",
 		});
 	});
 
@@ -505,7 +568,6 @@ describe("parse - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["low_energy"],
-			priority: "normal",
 		});
 	});
 
@@ -516,7 +578,6 @@ describe("parse - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["high_energy"],
-			priority: "normal",
 		});
 	});
 
@@ -527,7 +588,6 @@ describe("parse - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["chunking"],
-			priority: "normal",
 		});
 	});
 
@@ -538,7 +598,6 @@ describe("parse - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["errands"],
-			priority: "normal",
 		});
 	});
 
@@ -549,7 +608,6 @@ describe("parse - Focuses", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["hard_cognitive"],
-			priority: "normal",
 		});
 	});
 
@@ -562,7 +620,6 @@ describe("parse - Focuses", () => {
 			type: "main_mission",
 			tags: ["Tasks/Main_Mission"],
 			focuses: ["critical", "hyper_focus", "hard_cognitive"],
-			priority: "normal",
 		});
 	});
 
@@ -572,7 +629,6 @@ describe("parse - Focuses", () => {
 			content: "Simple task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 });
@@ -585,7 +641,6 @@ describe("parse - Scenarios", () => {
 			type: "quick",
 			tags: ["Tasks/Quick", "Scenarios/Work"],
 			scenarios: ["Work"],
-			priority: "normal",
 		});
 	});
 
@@ -598,7 +653,6 @@ describe("parse - Scenarios", () => {
 			type: "quick",
 			tags: ["Tasks/Quick", "Scenarios/Work/Intense/Programming"],
 			scenarios: ["Work/Intense/Programming"],
-			priority: "normal",
 		});
 	});
 
@@ -611,7 +665,6 @@ describe("parse - Scenarios", () => {
 			type: "quick",
 			tags: ["Tasks/Quick", "Scenarios/Work", "Scenarios/Home"],
 			scenarios: ["Work", "Home"],
-			priority: "normal",
 		});
 	});
 
@@ -630,7 +683,6 @@ describe("parse - Scenarios", () => {
 				"Scenarios/Errands/Supermarket/Fresh",
 			],
 			scenarios: ["Home/Kitchen/Recipes", "Errands/Supermarket/Fresh"],
-			priority: "normal",
 		});
 	});
 
@@ -640,7 +692,6 @@ describe("parse - Scenarios", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -655,7 +706,6 @@ describe("parse - Scenarios", () => {
 			type: "quick",
 			tags: ["Tasks/Quick", "Escenarios/Trabajo", "Escenarios/Casa"],
 			scenarios: ["Trabajo", "Casa"],
-			priority: "normal",
 		});
 	});
 
@@ -674,7 +724,6 @@ describe("parse - Scenarios", () => {
 			type: "quick",
 			tags: ["Tasks/Quick", "Escenarios/Trabajo", "Escenarios/Casa"],
 			scenarios: ["work", "home"],
-			priority: "normal",
 		});
 	});
 
@@ -691,7 +740,6 @@ describe("parse - Scenarios", () => {
 			type: "quick",
 			tags: ["Tasks/Quick", "Scenarios/Work", "Scenarios/Custom"],
 			scenarios: ["trabajo", "Custom"],
-			priority: "normal",
 		});
 	});
 
@@ -709,7 +757,6 @@ describe("parse - Scenarios", () => {
 			type: "quick",
 			tags: ["Tasks/Quick", "Escenarios/Trabajo/Programacion/Intensa"],
 			scenarios: ["Trabajo/Programacion/Intensa"],
-			priority: "normal",
 		});
 	});
 });
@@ -722,7 +769,6 @@ describe("parse - Energy", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			energy: "high",
-			priority: "normal",
 		});
 	});
 
@@ -733,7 +779,6 @@ describe("parse - Energy", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			energy: "medium",
-			priority: "normal",
 		});
 	});
 
@@ -744,7 +789,6 @@ describe("parse - Energy", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			energy: "low",
-			priority: "normal",
 		});
 	});
 
@@ -754,7 +798,6 @@ describe("parse - Energy", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 });
@@ -767,7 +810,6 @@ describe("parse - Duration", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			duration: "15m",
-			priority: "normal",
 		});
 	});
 
@@ -778,7 +820,6 @@ describe("parse - Duration", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			duration: "30m",
-			priority: "normal",
 		});
 	});
 
@@ -789,7 +830,6 @@ describe("parse - Duration", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			duration: "45m",
-			priority: "normal",
 		});
 	});
 
@@ -800,7 +840,6 @@ describe("parse - Duration", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			duration: "90m",
-			priority: "normal",
 		});
 	});
 
@@ -810,7 +849,6 @@ describe("parse - Duration", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 });
@@ -823,7 +861,6 @@ describe("parse - Blocking", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			blocking: true,
-			priority: "normal",
 		});
 	});
 
@@ -833,7 +870,6 @@ describe("parse - Blocking", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 });
@@ -846,7 +882,6 @@ describe("parse - Dates", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			createdAt: "2025-01-12",
-			priority: "normal",
 		});
 	});
 
@@ -857,7 +892,6 @@ describe("parse - Dates", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			scheduledAt: "2025-01-12",
-			priority: "normal",
 		});
 	});
 
@@ -868,7 +902,6 @@ describe("parse - Dates", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			startedAt: "2025-01-12",
-			priority: "normal",
 		});
 	});
 
@@ -879,7 +912,6 @@ describe("parse - Dates", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			dueAt: "2025-01-12",
-			priority: "normal",
 		});
 	});
 
@@ -890,7 +922,6 @@ describe("parse - Dates", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			completedAt: "2025-01-12",
-			priority: "normal",
 		});
 	});
 
@@ -901,7 +932,6 @@ describe("parse - Dates", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			cancelledAt: "2025-01-12",
-			priority: "normal",
 		});
 	});
 
@@ -918,7 +948,6 @@ describe("parse - Dates", () => {
 			createdAt: "2025-01-10",
 			scheduledAt: "2025-01-11",
 			dueAt: "2025-01-12",
-			priority: "normal",
 		});
 	});
 
@@ -928,7 +957,6 @@ describe("parse - Dates", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 });
@@ -941,7 +969,6 @@ describe("parse - Times", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			time: { start: "09:00", end: "10:30" },
-			priority: "normal",
 		});
 	});
 
@@ -952,7 +979,6 @@ describe("parse - Times", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			time: { start: "14:00", end: "15:45" },
-			priority: "normal",
 		});
 	});
 
@@ -962,7 +988,6 @@ describe("parse - Times", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 });
@@ -1018,14 +1043,15 @@ describe("parse - Priority", () => {
 		});
 	});
 
-	it("should default to normal priority", () => {
-		expect(parse("- [ ] Task #Tasks/Quick")).toMatchObject({
+	it("should have undefined priority when not specified", () => {
+		const result = parse("- [ ] Task #Tasks/Quick");
+		expect(result).toMatchObject({
 			state: "incomplete",
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
+		expect(result.priority).toBeUndefined();
 	});
 });
 
@@ -1039,7 +1065,6 @@ describe("parse - Recurrence", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			recurrence: "every week on Monday",
-			priority: "normal",
 		});
 	});
 
@@ -1052,7 +1077,6 @@ describe("parse - Recurrence", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			recurrence: "every 2 weeks on Tuesday",
-			priority: "normal",
 		});
 	});
 
@@ -1062,7 +1086,6 @@ describe("parse - Recurrence", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 });
@@ -1075,7 +1098,6 @@ describe("parse - Dependencies", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			id: "abc123",
-			priority: "normal",
 		});
 	});
 
@@ -1086,7 +1108,6 @@ describe("parse - Dependencies", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			dependencies: ["def999"],
-			priority: "normal",
 		});
 	});
 
@@ -1097,7 +1118,6 @@ describe("parse - Dependencies", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			dependencies: ["def999", "xyz111"],
-			priority: "normal",
 		});
 	});
 
@@ -1108,7 +1128,6 @@ describe("parse - Dependencies", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			hooks: { onCompletion: ["start:abc123"] },
-			priority: "normal",
 		});
 	});
 
@@ -1121,7 +1140,6 @@ describe("parse - Dependencies", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			hooks: { onCompletion: ["start:abc123", "notify:def456"] },
-			priority: "normal",
 		});
 	});
 
@@ -1136,7 +1154,6 @@ describe("parse - Dependencies", () => {
 			id: "task001",
 			dependencies: ["task002"],
 			hooks: { onCompletion: ["start:task003"] },
-			priority: "normal",
 		});
 	});
 
@@ -1146,7 +1163,6 @@ describe("parse - Dependencies", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 });
@@ -1166,7 +1182,6 @@ describe("parse - Complex Examples from SPEC", () => {
 			scenarios: ["Home/Organization"],
 			energy: "low",
 			duration: "15m",
-			priority: "normal",
 		});
 	});
 
@@ -1207,7 +1222,6 @@ describe("parse - Complex Examples from SPEC", () => {
 			duration: "15m",
 			energy: "medium",
 			dependencies: ["planRuta01"],
-			priority: "normal",
 		});
 	});
 
@@ -1221,7 +1235,6 @@ describe("parse - Complex Examples from SPEC", () => {
 			content: "Fix authentication bug",
 			type: "quick",
 			tags: ["Tasks/Quick", "bug", "urgent", "backend", "security"],
-			priority: "normal",
 		});
 	});
 });
@@ -1233,7 +1246,6 @@ describe("parse - Edge Cases", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -1272,7 +1284,6 @@ describe("parse - Edge Cases", () => {
 			content: "Task with @mentions and  but valid",
 			type: "quick",
 			tags: ["hashtags", "Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -1285,7 +1296,6 @@ describe("parse - Edge Cases", () => {
 			content: "Task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 });
@@ -1300,7 +1310,6 @@ describe("parse - Validation Errors", () => {
 			content: "Task  ➕ invalid-date",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -1312,7 +1321,6 @@ describe("parse - Validation Errors", () => {
 			content: "Task  ⏰ [9:00 - 10:30]",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 });
@@ -1330,7 +1338,6 @@ describe("parse - Content Extraction", () => {
 			tags: ["Tasks/Main_Mission"],
 			focuses: ["critical"],
 			energy: "high",
-			priority: "normal",
 		});
 	});
 
@@ -1340,7 +1347,6 @@ describe("parse - Content Extraction", () => {
 			content: "Complete 5 tasks today",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -1352,7 +1358,6 @@ describe("parse - Content Extraction", () => {
 			content: "Review Q4 results, prepare summary!",
 			type: "admin",
 			tags: ["Tasks/Admin"],
-			priority: "normal",
 		});
 	});
 });
@@ -1369,21 +1374,18 @@ describe("parseArray", () => {
 			content: "First task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 		expect(result[1]).toMatchObject({
 			state: "completed",
 			content: "Second task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 		expect(result[2]).toMatchObject({
 			state: "incomplete",
 			content: "Third task",
 			type: "main_mission",
 			tags: ["Tasks/Main_Mission"],
-			priority: "normal",
 		});
 	});
 
@@ -1401,7 +1403,6 @@ describe("parseArray", () => {
 			content: "Single task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -1425,7 +1426,6 @@ describe("parseArray", () => {
 			content: "First task",
 			type: "quick",
 			tags: ["Tasks/Quick"],
-			priority: "normal",
 		});
 	});
 
@@ -1448,14 +1448,12 @@ describe("parseArray", () => {
 			content: "Tarea 1",
 			type: "main_mission",
 			tags: ["Tareas/Mision_Principal"],
-			priority: "normal",
 		});
 		expect(result[1]).toMatchObject({
 			state: "incomplete",
 			content: "Tarea 2",
 			type: "quick",
 			tags: ["Tareas/Rapida"],
-			priority: "normal",
 		});
 	});
 
@@ -1470,7 +1468,6 @@ describe("parseArray", () => {
 			type: "quick",
 			tags: ["Tasks/Quick"],
 			focuses: ["critical"],
-			priority: "normal",
 		});
 		expect(result[1]).toMatchObject({
 			state: "completed",
@@ -1479,7 +1476,6 @@ describe("parseArray", () => {
 			tags: ["Tasks/Quick"],
 			createdAt: "2025-01-10",
 			completedAt: "2025-01-12",
-			priority: "normal",
 		});
 	});
 
