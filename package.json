@@ -61,7 +61,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.3.6",
     "@types/node": "^22.9.0",
     "@vitest/coverage-v8": "^2.1.4",
     "docsify-cli": "^4.4.4",
