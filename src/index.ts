@@ -4,6 +4,10 @@
 
 // Export parse and stringify functions and types
 export { type ParseConfig, parse, parseArray } from "./parse";
+export {
+	validateTask,
+	validateTaskWithErrors,
+} from "./schema";
 export { type StringifyConfig, stringify, stringifyArray } from "./stringify";
 export type {
 	Duration,

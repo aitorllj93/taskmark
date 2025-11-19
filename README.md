@@ -1,4 +1,4 @@
-# TaskMark
+# - [x] TaskMark
 
 A TypeScript library for parsing and stringifying TaskMark-v1 formatted tasks. TaskMark-v1 is a strict Markdown syntax for describing structured tasks enriched with semantic metadata, hierarchical tags, and focus emojis.
 

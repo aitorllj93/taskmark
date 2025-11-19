@@ -75,6 +75,13 @@ export interface ParseConfig<TScenario extends string = string> {
 	 * { "Escenarios/Trabajo": "work", "Escenarios/Casa": "home" }
 	 */
 	scenarioMapping?: Record<string, TScenario>;
+
+	/**
+	 * Whether to validate the parsed task with Zod schema
+	 * Default: true
+	 * Set to false to skip validation for better performance
+	 */
+	validate?: boolean;
 }
 
 // Parse function
@@ -343,8 +350,15 @@ export function parse<TScenario extends string = string>(
 	if (dependencies.length > 0) task.dependencies = dependencies;
 	if (onCompletion.length > 0) task.hooks = { onCompletion };
 
-	// Validate with Zod
-	return TaskSchema.parse(task) as Omit<Task, "scenarios"> & {
+	// Validate with Zod (unless explicitly disabled)
+	const shouldValidate = config?.validate !== false;
+	if (shouldValidate) {
+		return TaskSchema.parse(task) as Omit<Task, "scenarios"> & {
+			scenarios?: TScenario[];
+		};
+	}
+
+	return task as Omit<Task, "scenarios"> & {
 		scenarios?: TScenario[];
 	};
 }

@@ -1,3 +1,4 @@
+import { TaskSchema } from "./schema";
 import type { Focus, Priority, Task, TaskState, TaskType } from "./types";
 
 // Mapping from state names to symbols
@@ -75,12 +76,25 @@ export interface StringifyConfig<TScenario extends string = string> {
 	 * This is the inverse of ParseConfig.scenarioMapping
 	 */
 	scenarioMapping?: Record<TScenario, string>;
+
+	/**
+	 * Whether to validate the task with Zod schema before stringifying
+	 * Default: true
+	 * Set to false to skip validation for better performance
+	 */
+	validate?: boolean;
 }
 
 export function stringify<TScenario extends string = string>(
 	task: Task & { scenarios?: TScenario[] },
 	config?: StringifyConfig<TScenario>,
 ): string {
+	// Validate with Zod (unless explicitly disabled)
+	const shouldValidate = config?.validate !== false;
+	if (shouldValidate) {
+		TaskSchema.parse(task);
+	}
+
 	const parts: string[] = [];
 
 	// State

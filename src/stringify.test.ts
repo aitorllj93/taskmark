@@ -1403,3 +1403,124 @@ describe("stringifyArray", () => {
 		);
 	});
 });
+
+describe("stringify - Validation Options", () => {
+	it("should validate by default", () => {
+		// Valid task should stringify without error
+		const validTask: Task = {
+			state: "incomplete",
+			content: "Valid task",
+			type: "quick",
+			tags: ["Tasks/Quick"],
+			priority: "normal",
+		};
+		expect(() => stringify(validTask)).not.toThrow();
+
+		// Invalid task should throw error
+		const invalidTask = {
+			state: "incomplete",
+			content: "Invalid task",
+			type: "quick",
+			tags: ["Tasks/Quick"],
+			duration: "invalid", // Invalid duration format
+			priority: "normal",
+		} as Task;
+		expect(() => stringify(invalidTask)).toThrow();
+	});
+
+	it("should validate when explicitly enabled", () => {
+		// Valid task should stringify without error
+		const validTask: Task = {
+			state: "incomplete",
+			content: "Valid task",
+			type: "quick",
+			tags: ["Tasks/Quick"],
+			priority: "normal",
+		};
+		expect(() => stringify(validTask, { validate: true })).not.toThrow();
+
+		// Invalid task should throw error
+		const invalidTask = {
+			state: "incomplete",
+			content: "Invalid task",
+			type: "quick",
+			tags: ["Tasks/Quick"],
+			duration: "invalid",
+			priority: "normal",
+		} as Task;
+		expect(() => stringify(invalidTask, { validate: true })).toThrow();
+	});
+
+	it("should skip validation when disabled", () => {
+		// Valid task should stringify without error
+		const validTask: Task = {
+			state: "incomplete",
+			content: "Valid task",
+			type: "quick",
+			tags: ["Tasks/Quick"],
+			priority: "normal",
+		};
+		const result1 = stringify(validTask, { validate: false });
+		expect(result1).toBe("- [ ] Valid task #Tasks/Quick");
+
+		// Invalid task should still stringify (no validation)
+		const invalidTask = {
+			state: "incomplete",
+			content: "Invalid task",
+			type: "quick",
+			tags: ["Tasks/Quick"],
+			duration: "invalid",
+			priority: "normal",
+		} as Task;
+		const result2 = stringify(invalidTask, { validate: false });
+		expect(result2).toBe("- [ ] Invalid task #Tasks/Quick ⏱️ invalid");
+	});
+
+	it("should validate dates correctly", () => {
+		// Valid date
+		const validTask: Task = {
+			state: "incomplete",
+			content: "Task with valid date",
+			type: "quick",
+			tags: ["Tasks/Quick"],
+			dueAt: "2025-01-15",
+			priority: "normal",
+		};
+		expect(() => stringify(validTask)).not.toThrow();
+
+		// Invalid date format
+		const invalidTask = {
+			state: "incomplete",
+			content: "Task with invalid date",
+			type: "quick",
+			tags: ["Tasks/Quick"],
+			dueAt: "15-01-2025",
+			priority: "normal",
+		} as Task;
+		expect(() => stringify(invalidTask)).toThrow();
+	});
+
+	it("should validate time ranges correctly", () => {
+		// Valid time range
+		const validTask: Task = {
+			state: "incomplete",
+			content: "Task with valid time",
+			type: "quick",
+			tags: ["Tasks/Quick"],
+			time: { start: "09:00", end: "10:30" },
+			priority: "normal",
+		};
+		expect(() => stringify(validTask)).not.toThrow();
+
+		// Invalid time format
+		const invalidTask = {
+			state: "incomplete",
+			content: "Task with invalid time",
+			type: "quick",
+			tags: ["Tasks/Quick"],
+			time: { start: "9:00", end: "10:30" },
+			priority: "normal",
+		} as Task;
+		expect(() => stringify(invalidTask)).toThrow();
+	});
+});

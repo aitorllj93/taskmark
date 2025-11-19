@@ -101,3 +101,32 @@ export const TaskSchema = z.object({
 	dependencies: z.array(z.string()).optional(),
 	hooks: HooksSchema.optional(),
 });
+
+/**
+ * Validates a task object against the TaskSchema
+ * @param task The task object to validate
+ * @returns true if the task is valid, false otherwise
+ */
+export function validateTask(task: unknown): boolean {
+	return TaskSchema.safeParse(task).success;
+}
+
+/**
+ * Type guard that validates a task object
+ * @param task The task object to validate
+ * @returns true if the task is valid (narrows type to Task)
+ */
+export function isValidTask(task: unknown): task is z.infer<typeof TaskSchema> {
+	return TaskSchema.safeParse(task).success;
+}
+
+/**
+ * Validates a task and returns detailed error information if invalid
+ * @param task The task object to validate
+ * @returns Success result with data or error result with issues
+ */
+export function validateTaskWithErrors(
+	task: unknown,
+): ReturnType<typeof TaskSchema.safeParse> {
+	return TaskSchema.safeParse(task);
+}

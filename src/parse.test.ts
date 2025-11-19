@@ -1509,3 +1509,63 @@ describe("parseArray", () => {
 		expect(parsed[1].content).toBe(tasks[1].content);
 	});
 });
+
+describe("parse - Validation Options", () => {
+	it("should validate by default", () => {
+		// Valid task should parse without error
+		expect(() => parse("- [ ] Valid task #Tasks/Quick")).not.toThrow();
+	});
+
+	it("should validate when explicitly enabled", () => {
+		// Valid task should parse without error
+		expect(() =>
+			parse("- [ ] Valid task #Tasks/Quick", { validate: true }),
+		).not.toThrow();
+	});
+
+	it("should skip validation when disabled", () => {
+		// Valid task should parse without error with validation disabled
+		const result1 = parse("- [ ] Valid task #Tasks/Quick", {
+			validate: false,
+		});
+		expect(result1.content).toBe("Valid task");
+	});
+
+	it("should validate dates correctly", () => {
+		// Valid date
+		expect(() =>
+			parse("- [ ] Task with valid date #Tasks/Quick 📅 2025-01-15"),
+		).not.toThrow();
+	});
+
+	it("should validate time ranges correctly", () => {
+		// Valid time range
+		expect(() =>
+			parse("- [ ] Task with valid time #Tasks/Quick ⏰ [09:00 - 10:30]"),
+		).not.toThrow();
+	});
+
+	it("should validate parsed task object with validation enabled", () => {
+		// This tests that validation actually runs on the constructed task object
+		const validTask = parse("- [ ] Valid task #Tasks/Quick 📅 2025-01-15", {
+			validate: true,
+		});
+		expect(validTask.dueAt).toBe("2025-01-15");
+	});
+
+	it("should allow bypassing validation for performance", () => {
+		// This demonstrates the use case: parsing many tasks without validation overhead
+		const tasks = [
+			"- [ ] Task 1 #Tasks/Quick",
+			"- [ ] Task 2 #Tasks/Quick",
+			"- [ ] Task 3 #Tasks/Quick",
+		];
+
+		// With validation disabled, should parse quickly
+		const parsed = tasks.map((task) => parse(task, { validate: false }));
+		expect(parsed).toHaveLength(3);
+		expect(parsed[0].content).toBe("Task 1");
+		expect(parsed[1].content).toBe("Task 2");
+		expect(parsed[2].content).toBe("Task 3");
+	});
+});
