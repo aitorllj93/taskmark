@@ -63,7 +63,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@types/node": "^22.9.0",
-    "@vitest/coverage-v8": "^2.1.4",
+    "@vitest/coverage-v8": "^4.0.10",
     "docsify-cli": "^4.4.4",
     "tsup": "^8.3.5",
     "tsx": "^4.20.6",
