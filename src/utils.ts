@@ -513,7 +513,10 @@ export function addFocus(taskString: string, focus: string): string {
 				? tagMatch.index
 				: taskString.length;
 
-		const insertPos = Math.max(lastFocusPos, Math.min(afterState + 1, contentStart));
+		const insertPos = Math.max(
+			lastFocusPos,
+			Math.min(afterState + 1, contentStart),
+		);
 		// Remove spaces from both ends to avoid double spacing
 		const before = taskString.slice(0, insertPos).trimEnd();
 		const after = taskString.slice(insertPos).trimStart();

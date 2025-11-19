@@ -260,7 +260,9 @@ describe("stringify - Optional Fields", () => {
 			duration: "30m",
 			energy: "high",
 		};
-		expect(stringify(task)).toBe("- [ ] Task with metadata 🌡️ high ⏱️ 30m 🆔 task123");
+		expect(stringify(task)).toBe(
+			"- [ ] Task with metadata 🌡️ high ⏱️ 30m 🆔 task123",
+		);
 	});
 
 	it("should stringify task with focuses but no type", () => {
