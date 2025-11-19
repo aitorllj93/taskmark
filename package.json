@@ -36,7 +36,16 @@
     "docs:serve": "docsify serve docs",
     "docs:init": "docsify init ./docs"
   },
-  "keywords": ["typescript", "library", "taskmark", "task", "parser", "markdown", "task-management", "productivity"],
+  "keywords": [
+    "typescript",
+    "library",
+    "taskmark",
+    "task",
+    "parser",
+    "markdown",
+    "task-management",
+    "productivity"
+  ],
   "engines": {
     "node": ">=18.0.0"
   },
