@@ -1,6 +1,6 @@
 {
 	"name": "taskmark",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "The Markdown Tasks specification",
 	"author": "Aitor Llamas Jiménez <aitorllj93@gmail.com>",
 	"license": "MIT",
